@@ -24,12 +24,16 @@ Le serveur d'authentification centralisé (CA_server) héberge plusieurs scripts
 - Création d'Entrée dans DynamoDB : Les utilisateurs autorisés, identifiés dans la table tokens, peuvent créer une entrée dans une table DynamoDB spécifique. Cette table gère la partie DNS pour l'utilisation du VPN sur les consoles, facilitant la configuration et le routage DNS personnalisé pour chaque utilisateur.
 La table DynamoDB sur AWS joue un rôle central dans la gestion DNS, permettant une utilisation optimale du VPN sur console.
 
+<img src="https://github.com/Yb2411/ezlobby/blob/main/smart_dns_arch.png" alt="smartdnsfonc" width="800" height="400">
+
 #### Fonctionnement
 - Chaque entrée dans DynamoDB contient le nom du client (ou token), son IP, et sa destination VPN choisie.
 - Modification de la Table DynamoDB : À chaque changement, une fonction Lambda est déclenchée. Cette fonction exécute create_acls.py sur le serveur CA, générant deux fichiers ACLs :
 - Un pour les DNS
 - Un pour les serveurs proxy NGINX
--
+
+<img src="https://github.com/Yb2411/ezlobby/blob/main/smart_dns_fonctionnel.png" alt="smartdnsfonc" width="600" height="900">
+
 - ## Gestion des Expirations
 
 La gestion des expirations est un processus crucial dans notre système VPN pour maintenir l'intégrité et la sécurité des sessions utilisateurs. Ce processus est orchestré principalement par le script `monitoring.py`, qui s'exécute dans une application Flask sur le port 5000, et est appuyé par une série de tâches cron pour la surveillance et la maintenance des sessions actives et expirées.
