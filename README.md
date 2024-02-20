@@ -36,7 +36,7 @@ La gestion des expirations est un processus crucial dans notre système VPN pour
 
 ### Processus de Surveillance
 
-1. **Surveillance des Logs** : Une tâche cron s'exécute toutes les deux minutes pour parcourir les fichiers log situés dans `/monitoring/*.log`. Cette tâche cherche spécifiquement les entrées débutant par `haz_client` pour identifier les sessions actives. Lorsqu'une nouvelle session est détectée :
+1. **Surveillance des Logs** : Une tâche cron s'exécute toutes les deux minutes pour parcourir les fichiers log situés dans `/monitoring/*.log`. Cette tâche identifie les sessions actives. Lorsqu'une nouvelle session est détectée :
    - Si l'utilisateur n'existe pas déjà dans la base de données, il est inscrit avec les informations pertinentes, dont la durée de la session (`duration`).
 
 2. **Vérification des Fichiers OpenVPN.log** : Parallèlement, chaque fois qu'un utilisateur est trouvé dans les logs OpenVPN, le système vérifie la présence de cet utilisateur dans la table `expirations`. Deux cas se présentent :
@@ -80,8 +80,9 @@ Les souscriptions sont gérées via WooCommerce sur un site WordPress, où des s
 ### Base de Données monitoring
 Une base de données MySQL monitoring contient
 - la table tokens, enregistrant chaque utilisateur avec son email (nom_client), la durée de son abonnement (duration), et un indicateur (revoked) pour suivre l'état de l'abonnement.
-- la table expirations,
-- 
+- la table expirations, qui contient la date de début de l'utilisation / souscription au vpn et inscrit la date de fin (utilisé par les cron pour revoker)
+- la table session, qui enregistre les sessions vpn des users openvpn
+
 ### AWS DynamoDB et Fonction Lambda
 La table DynamoDB stocke les informations des utilisateurs autorisés à créer une entrée pour la gestion DNS. Chaque modification dans cette table déclenche une fonction Lambda, qui exécute le script create_acls.py sur le CA_server pour générer des ACLs pour DNS et NGINX.
 
